@@ -99,44 +99,20 @@ local throttled_iterator_callback = function(opts, callback)
   end
 end
 
-M.throttled_iterator = vim.async.wrap(
-  2,
-  --- @generic InvariantState, ControlVar
-  --- @param opts ThrottledIteratorOpts<InvariantState, ControlVar>
-  --- @param callback fun(arg:nil):nil
-  function(opts, callback)
-    local task = vim.async.run("throttled_iterator_task", function()
-      throttled_iterator_callback(opts, function()
-        callback(nil)
-      end)
-    end)
-    task:on_complete(function(err)
-      if err then
-        callback(err)
-      end
-    end)
-    return task
-  end
-)
+--- @generic InvariantState, ControlVar
+--- @param opts ThrottledIteratorOpts<InvariantState, ControlVar>
+M.throttled_iterator = function(opts)
+  vim.async.await(function(done)
+    throttled_iterator_callback(opts, done)
+  end)
+end
 
-M.batched_iterator = vim.async.wrap(
-  2,
-  --- @generic InvariantState, ControlVar
-  --- @param opts BatchedIteratorOpts<InvariantState, ControlVar>
-  --- @param callback fun(arg:nil):nil
-  function(opts, callback)
-    local task = vim.async.run("batched_iterator_task", function()
-      batched_iterator_callback(opts, function()
-        callback(nil)
-      end)
-    end)
-    task:on_complete(function(err)
-      if err then
-        callback(err)
-      end
-    end)
-    return task
-  end
-)
+--- @generic InvariantState, ControlVar
+--- @param opts BatchedIteratorOpts<InvariantState, ControlVar>
+M.batched_iterator = function(opts)
+  vim.async.await(function(done)
+    batched_iterator_callback(opts, done)
+  end)
+end
 
 return M

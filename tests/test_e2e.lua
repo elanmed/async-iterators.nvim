@@ -9,21 +9,24 @@ end
 
 local run_async = function(name, fn, opts)
   local result = {}
-  vim.async.run(name, function()
+  local task = vim.async.run(name, function()
     result.value = fn(opts)
+  end)
+  task:on_complete(function(err)
+    result.err = err
     result.done = true
   end)
   wait_for(function()
     return result.done == true
   end)
-  return result.value
+  return result.err or result.value
 end
 
 local T = new_set()
 
 T["throttled_iterator()"] = new_set()
 
-T["throttled_iterator()"]["runs the callback API in async context"] = function()
+T["throttled_iterator()"]["runs in async context"] = function()
   local seen = {}
   local result = {}
   vim.async.run("runs_callback_task", function()
