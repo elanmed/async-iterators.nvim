@@ -80,6 +80,23 @@ T["throttled_iterator()"]["returns on_iteration errors"] = function()
   eq(err:match "on_iteration error", "on_iteration error")
 end
 
+T["throttled_iterator()"]["cancels before the first iteration"] = function()
+  local seen = {}
+  local result = run_async("run_async_task", M.throttled_iterator, {
+    iterator_factory = function()
+      return ipairs { "one", "two" }
+    end,
+    should_cancel = function()
+      return true
+    end,
+    on_iteration = function(_, value)
+      seen[#seen + 1] = value
+    end,
+  })
+  eq(result, nil)
+  eq(seen, {})
+end
+
 T["batched_iterator()"] = new_set()
 
 local run_batched = function(values)
@@ -141,6 +158,28 @@ T["batched_iterator()"]["cancels before the next iteration"] = function()
   run_async("batched_iterator_task", M.batched_iterator, opts)
   eq(seen, { "one", "two" })
   eq(batches, 1)
+end
+
+T["batched_iterator()"]["cancels before the first iteration"] = function()
+  local seen = {}
+  local batches = 0
+  local result = run_async("batched_iterator_task", M.batched_iterator, {
+    iterator_factory = function()
+      return ipairs { "one", "two" }
+    end,
+    should_cancel = function()
+      return true
+    end,
+    on_iteration = function(_, value)
+      seen[#seen + 1] = value
+    end,
+    on_batch = function()
+      batches = batches + 1
+    end,
+  })
+  eq(result, nil)
+  eq(seen, {})
+  eq(batches, 0)
 end
 
 return T
