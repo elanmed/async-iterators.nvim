@@ -1,4 +1,4 @@
-.PHONY: dev clean test lint format docs snapshot
+.PHONY: dev clean test lint format docs snapshot deploy
 
 dev:
 	mkdir -p ~/.local/share/nvim/site/pack/dev/start/async.nvim
@@ -27,7 +27,5 @@ docs:
 	mkdir -p ./doc
 	./deps/ts-vimdoc.nvim/scripts/docgen.sh README.md doc/async.txt async
 	nvim --headless -c "helptags doc/" -c "qa"
-
-pre_push: test lint format
 
 deploy: test lint format docs snapshot

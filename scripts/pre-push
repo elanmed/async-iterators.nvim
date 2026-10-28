@@ -3,6 +3,6 @@
 while read -r local_ref local_sha remote_ref remote_sha; do
   if [[ $local_ref == "refs/heads/master" ]]; then
     echo "Running CI checks..."
-    make pre_push || exit 1
+    make deploy || exit 1
   fi
 done
