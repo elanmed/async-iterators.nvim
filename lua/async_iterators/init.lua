@@ -9,9 +9,7 @@ local M = {}
 
 --- @generic InvariantState, ControlVar
 --- @param opts BatchedIteratorOpts<InvariantState, ControlVar>
---- @param callback fun(arg:nil):nil
-local function batched_iterator_callback(opts, callback)
-  opts = opts or {}
+M.batched_iterator = function(opts)
   local batch_size = opts.batch_size or 100
   local should_cancel = opts.should_cancel or function()
     return false
@@ -19,15 +17,13 @@ local function batched_iterator_callback(opts, callback)
 
   local iter_fn, invariant_state, control_var = opts.iterator_factory()
   local on_batch = opts.on_batch or function() end
-  local step
-  step = function()
+  while true do
     local num_processed = 0
     while num_processed < batch_size do
       if should_cancel() then
         if num_processed > 0 then
           on_batch()
         end
-        callback(nil)
         return
       end
 
@@ -38,7 +34,6 @@ local function batched_iterator_callback(opts, callback)
         if num_processed > 0 then
           on_batch()
         end
-        callback(nil)
         return
       end
 
@@ -47,9 +42,8 @@ local function batched_iterator_callback(opts, callback)
     end
 
     on_batch()
-    vim.schedule(step)
+    vim.async.sleep(0)
   end
-  step()
 end
 
 --- @class ThrottledIteratorOpts<InvariantState, ControlVar>
@@ -60,59 +54,34 @@ end
 
 --- @generic InvariantState, ControlVar
 --- @param opts ThrottledIteratorOpts<InvariantState, ControlVar>
---- @param callback fun(arg:nil):nil
-local throttled_iterator_callback = function(opts, callback)
+M.throttled_iterator = function(opts)
   local threshold_ns = opts.threshold_ns or (10 * 1000000)
   local should_cancel = opts.should_cancel or function()
     return false
   end
 
-  local function make_throttle()
-    local last_yield = vim.uv.hrtime()
-    return function()
-      local now = vim.uv.hrtime()
-      if (now - last_yield) >= threshold_ns then
-        last_yield = now
-        vim.async.sleep(0)
-      end
-    end
-  end
-
-  local maybe_pause = make_throttle()
+  local last_yield = vim.uv.hrtime()
   local iter_fn, invariant_state, control_var = opts.iterator_factory()
   while true do
     if should_cancel() then
-      callback(nil)
       return
     end
-    maybe_pause()
+
+    local now = vim.uv.hrtime()
+    if (now - last_yield) >= threshold_ns then
+      last_yield = now
+      vim.async.sleep(0)
+    end
 
     local values = { iter_fn(invariant_state, control_var) }
     control_var = values[1]
 
     if control_var == nil then
-      callback(nil)
       return
     end
 
     opts.on_iteration(unpack(values))
   end
-end
-
---- @generic InvariantState, ControlVar
---- @param opts ThrottledIteratorOpts<InvariantState, ControlVar>
-M.throttled_iterator = function(opts)
-  vim.async.await(function(done)
-    throttled_iterator_callback(opts, done)
-  end)
-end
-
---- @generic InvariantState, ControlVar
---- @param opts BatchedIteratorOpts<InvariantState, ControlVar>
-M.batched_iterator = function(opts)
-  vim.async.await(function(done)
-    batched_iterator_callback(opts, done)
-  end)
 end
 
 return M

@@ -43,7 +43,7 @@ end)
 
 ## `batched_iterator()`
 
-`batched_iterator()` processes a fixed number of items before scheduling the next batch, keeping large iterations responsive. Call it inside a `vim.async` context.
+`batched_iterator()` processes a fixed number of items before yielding to the main loop, keeping large iterations responsive. Call it inside a `vim.async` context.
 
 ```lua
 ---@class BatchedIteratorOpts<InvariantState, ControlVar>
