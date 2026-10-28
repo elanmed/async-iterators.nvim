@@ -1,14 +1,14 @@
-*async.txt*                                     Last change: 2026 September 05
+*async-iterators.txt*                           Last change: 2026 September 05
 
 ==============================================================================
-Table of Contents                                    *async-table-of-contents*
+Table of Contents                          *async-iterators-table-of-contents*
 
-Requirements ............................................ |async-requirements|
-`throttled_iterator()` .......................... |async-throttled_iterator()|
-`batched_iterator()` .............................. |async-batched_iterator()|
+Requirements .................................. |async-iterators-requirements|
+`throttled_iterator()` ................ |async-iterators-throttled_iterator()|
+`batched_iterator()` .................... |async-iterators-batched_iterator()|
 
 ==============================================================================
-`ASYNC.NVIM`                                                *async-async.nvim*
+`ASYNC-ITERATORS.NVIM`                  *async-iterators-async-iterators.nvim*
 
 
 Throttled and batched iterators built on Neovim's `vim.async` API. Iterate
@@ -16,13 +16,13 @@ without freezing the UI.
 
 
 ------------------------------------------------------------------------------
-REQUIREMENTS                                              *async-requirements*
+REQUIREMENTS                                    *async-iterators-requirements*
 
 
 - Neovim nightly with `vim.async` support
 
 ------------------------------------------------------------------------------
-`THROTTLED_ITERATOR()`                            *async-throttled_iterator()*
+`THROTTLED_ITERATOR()`                  *async-iterators-throttled_iterator()*
 
 
 `throttled_iterator()` consumes an iterator in batches and yields to the main
@@ -40,14 +40,14 @@ loop when the configured time threshold is reached. Call it inside a
     --- @field threshold_ns? number
     --- @field should_cancel? fun(): boolean
     --- @field on_iteration fun(control_var: ControlVar, ...): nil
-    async.throttled_iterator(opts)
+    async_iterators.throttled_iterator(opts)
 <
 The iterator factory returns the iterator function, its invariant state, and
 its initial control variable. The iterator's first return value becomes the
 next control variable; iteration ends when it is `nil`.
 
 >lua
-    local a = require("async")
+    local a = require("async_iterators")
     
     vim.async.run(function()
       a.throttled_iterator {
@@ -62,7 +62,7 @@ next control variable; iteration ends when it is `nil`.
 <
 
 ------------------------------------------------------------------------------
-`BATCHED_ITERATOR()`                                *async-batched_iterator()*
+`BATCHED_ITERATOR()`                      *async-iterators-batched_iterator()*
 
 
 `batched_iterator()` processes a fixed number of items before scheduling the
@@ -77,7 +77,7 @@ context.
     ---@field on_iteration fun(control_var: ControlVar, ...): nil Called for every item.
     ---@field on_batch? fun(): nil Called after every non-empty batch.
     
-    async.batched_iterator(opts)
+    async_iterators.batched_iterator(opts)
 <
 >lua
     vim.async.run(function()

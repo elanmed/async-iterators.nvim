@@ -1,6 +1,6 @@
-async-async.nvim	async.txt	/*async-async.nvim*
-async-batched_iterator()	async.txt	/*async-batched_iterator()*
-async-requirements	async.txt	/*async-requirements*
-async-table-of-contents	async.txt	/*async-table-of-contents*
-async-throttled_iterator()	async.txt	/*async-throttled_iterator()*
-async.txt	async.txt	/*async.txt*
+async-iterators-async-iterators.nvim	async-iterators.txt	/*async-iterators-async-iterators.nvim*
+async-iterators-batched_iterator()	async-iterators.txt	/*async-iterators-batched_iterator()*
+async-iterators-requirements	async-iterators.txt	/*async-iterators-requirements*
+async-iterators-table-of-contents	async-iterators.txt	/*async-iterators-table-of-contents*
+async-iterators-throttled_iterator()	async-iterators.txt	/*async-iterators-throttled_iterator()*
+async-iterators.txt	async-iterators.txt	/*async-iterators.txt*

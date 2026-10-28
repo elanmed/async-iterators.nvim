@@ -1,12 +1,12 @@
-# async.nvim
+# async-iterators.nvim
 
 A minimal Neovim plugin to
 
-> **This project is small. When working on it, read the source at `lua/async/init.lua` directly and include it in context — that's more reliable than any summary here.**
+> **This project is small. When working on it, read the source at `lua/async_iterators/init.lua` directly and include it in context — that's more reliable than any summary here.**
 
 ## Project overview
 
-- **Source**: `lua/async/init.lua` — all logic in one module
+- **Source**: `lua/async_iterators/init.lua` — all logic in one module
 - **Docs**: `README.md`
 - **Makefile**: `makefile`
 - **Tests**: `tests/test_e2e.lua` — see the `testing` skill

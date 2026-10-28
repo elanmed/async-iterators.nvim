@@ -1,7 +1,7 @@
 local new_set = MiniTest.new_set
 local eq = MiniTest.expect.equality
 
-local M = require "async"
+local M = require "async_iterators"
 
 local wait_for = function(predicate)
   eq(vim.wait(100, predicate), true)

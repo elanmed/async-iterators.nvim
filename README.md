@@ -1,4 +1,4 @@
-# `async.nvim`
+# `async-iterators.nvim`
 
 Throttled and batched iterators built on Neovim's `vim.async` API. Iterate without freezing the UI.
 
@@ -21,13 +21,13 @@ Throttled and batched iterators built on Neovim's `vim.async` API. Iterate witho
 --- @field threshold_ns? number
 --- @field should_cancel? fun(): boolean
 --- @field on_iteration fun(control_var: ControlVar, ...): nil
-async.throttled_iterator(opts)
+async_iterators.throttled_iterator(opts)
 ```
 
 The iterator factory returns the iterator function, its invariant state, and its initial control variable. The iterator's first return value becomes the next control variable; iteration ends when it is `nil`.
 
 ```lua
-local a = require("async")
+local a = require("async_iterators")
 
 vim.async.run(function()
   a.throttled_iterator {
@@ -53,7 +53,7 @@ end)
 ---@field on_iteration fun(control_var: ControlVar, ...): nil Called for every item.
 ---@field on_batch? fun(): nil Called after every non-empty batch.
 
-async.batched_iterator(opts)
+async_iterators.batched_iterator(opts)
 ```
 
 ```lua
