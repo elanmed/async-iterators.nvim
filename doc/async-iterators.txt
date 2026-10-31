@@ -1,4 +1,4 @@
-*async-iterators.txt*                           Last change: 2026 September 05
+*async-iterators.txt*                             Last change: 2026 October 28
 
 ==============================================================================
 Table of Contents                          *async-iterators-table-of-contents*
@@ -44,7 +44,8 @@ loop when the configured time threshold is reached. Call it inside a
 <
 The iterator factory returns the iterator function, its invariant state, and
 its initial control variable. The iterator's first return value becomes the
-next control variable; iteration ends when it is `nil`.
+next control variable; iteration ends when it is `nil`. All values returned by
+the iterator are passed to `on_iteration`.
 
 >lua
     local a = require("async_iterators")
@@ -72,7 +73,7 @@ context.
 >lua
     ---@class BatchedIteratorOpts<InvariantState, ControlVar>
     ---@field iterator_factory fun(): ((fun(invariant_state: InvariantState, control_var: ControlVar):ControlVar), InvariantState, ControlVar)
-    ---@field batch_size? number Defaults to 100.
+    ---@field batch_size? number Defaults to 100; must be a positive integer.
     ---@field should_cancel? fun(): boolean Called before each iteration; returning true stops iteration.
     ---@field on_iteration fun(control_var: ControlVar, ...): nil Called for every item.
     ---@field on_batch? fun(): nil Called after every non-empty batch.

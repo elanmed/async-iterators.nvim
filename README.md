@@ -24,7 +24,7 @@ Throttled and batched iterators built on Neovim's `vim.async` API. Iterate witho
 async_iterators.throttled_iterator(opts)
 ```
 
-The iterator factory returns the iterator function, its invariant state, and its initial control variable. The iterator's first return value becomes the next control variable; iteration ends when it is `nil`.
+The iterator factory returns the iterator function, its invariant state, and its initial control variable. The iterator's first return value becomes the next control variable; iteration ends when it is `nil`. All values returned by the iterator are passed to `on_iteration`.
 
 ```lua
 local a = require("async_iterators")
@@ -48,7 +48,7 @@ end)
 ```lua
 ---@class BatchedIteratorOpts<InvariantState, ControlVar>
 ---@field iterator_factory fun(): ((fun(invariant_state: InvariantState, control_var: ControlVar):ControlVar), InvariantState, ControlVar)
----@field batch_size? number Defaults to 100.
+---@field batch_size? number Defaults to 100; must be a positive integer.
 ---@field should_cancel? fun(): boolean Called before each iteration; returning true stops iteration.
 ---@field on_iteration fun(control_var: ControlVar, ...): nil Called for every item.
 ---@field on_batch? fun(): nil Called after every non-empty batch.

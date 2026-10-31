@@ -2,15 +2,22 @@ local M = {}
 
 --- @class BatchedIteratorOpts<InvariantState, ControlVar>
 --- @field iterator_factory fun(): ((fun(invariant_state: InvariantState, control_var: ControlVar):ControlVar), InvariantState, ControlVar)
---- @field batch_size? number
+--- @field batch_size? number Defaults to 100; must be a positive integer.
 --- @field should_cancel? fun():boolean
---- @field on_iteration fun(entry: ControlVar):nil
+--- @field on_iteration fun(control_var: ControlVar, ...):nil
 --- @field on_batch? fun():nil
 
 --- @generic InvariantState, ControlVar
 --- @param opts BatchedIteratorOpts<InvariantState, ControlVar>
 M.batched_iterator = function(opts)
-  local batch_size = opts.batch_size or 100
+  local batch_size = opts.batch_size
+  if batch_size == nil then
+    batch_size = 100
+  end
+  if type(batch_size) ~= "number" or batch_size < 1 or batch_size % 1 ~= 0 then
+    error("batch_size must be a positive integer", 2)
+  end
+
   local should_cancel = opts.should_cancel or function()
     return false
   end
