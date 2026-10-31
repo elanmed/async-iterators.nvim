@@ -1,4 +1,4 @@
-.PHONY: dev clean test lint format docs snapshot deploy
+.PHONY: dev clean test lint format docs snapshot update-submodules deploy
 
 dev:
 	mkdir -p ~/.local/share/nvim/site/pack/dev/start/async-iterators.nvim
@@ -24,9 +24,12 @@ format:
 	# https://github.com/JohnnyMorganz/StyLua#usage
 	stylua .
 
+update-submodules:
+	git submodule update --init --recursive --remote
+
 docs:
 	mkdir -p ./doc
 	./deps/ts-vimdoc.nvim/scripts/docgen.sh README.md doc/async-iterators.txt async-iterators
 	nvim --headless -c "helptags doc/" -c "qa"
 
-deploy: test lint format docs snapshot
+deploy: update-submodules test lint format docs snapshot
